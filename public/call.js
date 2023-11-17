@@ -4,7 +4,7 @@ const socket = io(serverApi)
 
 const SUF = "MEET"
 let room_id;
-let getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+let getUserMedia = navigator.mediaDevices.getUserMedia || navigator.mediaDevices.webkitGetUserMedia || navigator.mediaDevices.mozGetUserMedia;
 let local_stream;
 let peer = null;
 let peer_id = ''
