@@ -1,4 +1,5 @@
-const socket = io('http://localhost:3333');
+// const socket = io('http://localhost:3333');
+const socket = io('http://127.0.0.1:3333');
 let room_chat_id
 let busy = false
 const beforeNameRoom = 'peer'

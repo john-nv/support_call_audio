@@ -1,4 +1,5 @@
-const serverApi = 'http://localhost:3333'
+// const serverApi = 'http://localhost:3333'
+const serverApi = 'http://127.0.0.1:3333'
 const socket = io(serverApi)
 
 const SUF = "MEET"
