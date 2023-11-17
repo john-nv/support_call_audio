@@ -2,7 +2,7 @@ module.exports = {
     apps : [
       {
         name: "support-call-web",
-        script: "./index,js",
+        script: "./index.js",
         instances: "max",
         exec_mode: "cluster",
         watch: true,
