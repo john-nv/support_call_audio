@@ -1,5 +1,5 @@
 // const socket = io('http://localhost:3333');
-const serverApi = 'http:/38.242.159.108:3333'
+const socket = io('http://38.242.159.108:3333');
 let room_chat_id
 let busy = false
 const beforeNameRoom = 'peer'
