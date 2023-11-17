@@ -3,7 +3,7 @@ module.exports = {
       {
         name: "support-call-web",
         script: "./index.js",
-        instances: "max",
+        // instances: "max",
         exec_mode: "cluster",
         watch: true,
         max_memory_restart: "4G", 
