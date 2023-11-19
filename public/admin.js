@@ -1,7 +1,8 @@
-const serverApi = 'http://localhost:3333'
+// const serverApi = 'http://localhost:3333'
 // const serverApi = 'https://9bdd-171-232-180-235.ngrok-free.app'
 // const serverApi = 'http://38.242.159.108:3333'
-const socket = io(serverApi)
+// const socket = io(serverApi)
+const socket = io()
 
 let getUserMedias = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 let room_id
