@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const room = new Schema({
-    name: String,
-    idAdmin: String,
+const historyCall = new Schema({
     nameUser: String,
+    whoEndCall: String,
     idRoom: String,
-    timeLast: Date
+    timeInCall: String,
+    timeCall: String,
+    status: String,
 }, {
     timestamps: {
         createdAt: 'createdAt',
@@ -15,4 +16,4 @@ const room = new Schema({
     timezone: 'Asia/Ho_Chi_Minh'
 })
 
-module.exports = mongoose.model('room', room)
+module.exports = mongoose.model('historyCall', historyCall)

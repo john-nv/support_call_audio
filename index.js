@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 const db = require('./db/mongo')
 const router = require('./router')
-const { roomSchema } = require('./app/schemas')
+const { historySchema } = require('./app/schemas')
 
 let ADMIN_BUSY = false;
 
@@ -33,75 +33,83 @@ app.get('/admin', (req, res) => {
   res.sendFile(__dirname + '/public/admin.html');
 });
 
+app.get('/history', async (req, res) => {
+  try {
+      const data = await historySchema.find().sort({ createdAt: -1 });
+      res.json(data);
+  } catch (error) {
+      console.error('Error fetching history:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/public/index.html');
 });
 
-
+let connectionRoom = []
 
 io.on('connection', (socket) => {
-
   // gui du lieu den admin
   socket.on('create_room', async payload => {
+    console.log('create_room => ', payload.room_id)
+    connectionRoom.push(payload.room_id)
     payload.time = getTimeCurrent()
     io.emit('create_room_admin', payload);
   });
 
   // user roi phong
   socket.on('leave_room', async payload => {
-    console.log('leave_room')
+    console.log('leave_room => ', payload.room_id)
+    connectionRoom = connectionRoom.filter(item => item !== payload.room_id);
+    payload.time = getTimeCurrent()
+    io.emit('leave_room_alert_admin', payload);
+    createHistory(payload)
+  });
+
+  // admin roi phong truoc
+  socket.on('leave_room_from_admin', async payload => {
+    console.log('admin_leave_room => ', payload.room_id)
+    connectionRoom = connectionRoom.filter(item => item !== payload.room_id);
     payload.time = getTimeCurrent()
     io.emit('leave_room_admin', payload);
   });
 
-
   console.log(`SOCKET ID - connect => ${socket.id}`);
-  socket.on('disconnect', () => {
-    console.log(`SOCKET ID - disconnected => ${socket.id}`);
-    io.emit('leave_room_admin', {room_id: `${socket.id}MEET`});
-});
   
-  // // nhan tin nhan user
-  // socket.on('message-user', payload => {
-  //   const { room_chat_id, message, to } = payload;
-  //   const veryRoom = validateRoom(room_chat_id)
-  //   if(veryRoom < 1)  return
-  //   io.emit('message-admin', message);
-  // });
-
-
-//   // nhan tin nhan admin
-//   socket.on('message-admin', payload => {
-//     const { room_chat_id, message } = payload;
-//     const veryRoom = validateRoom(room_chat_id)
-//     if(veryRoom < 1) return
-//     io.emit('message-user', message);
-//   });
-
-//   function validateRoom(room_chat_id) {
-//     return roomSchema.countDocuments({idRoom: room_chat_id});
-//   }
-
-//   // function saveMessage(room_chat_id) {
-//   //   return roomSchema.countDocuments({idRoom: room_chat_id});
-//   // }
+  socket.on('disconnect', () => {
+    checkLeaveRoomCall(socket.id)
+    console.log(`SOCKET ID - disconnected => ${socket.id}`);
+  });
 });
-
-
-
-
-
-
-
-
+function createHistory(payload) {
+  const timeCurrent = getTimeCurrent();
+  const data = {
+    nameUser: payload.nameUser || 'không xác định',
+    whoEndCall: payload.whoIsEndCall || 'không xác định',
+    idRoom: payload.room_id || 'không xác định',
+    timeInCall: payload.countTimeCall || 'không xác định',
+    timeCall: timeCurrent,
+  };
+  console.log(data)
+  historySchema.create(data);
+}
 
 function getTimeCurrent(){
   const hcmcTime = moment().utcOffset(7); 
   return hcmcTime.format('HH:mm');
 }
 
-
-
+function checkLeaveRoomCall(socketId){
+  let arrSocketConnection = connectionRoom.filter(item => item.startsWith(socketId));
+  if (arrSocketConnection.length > 0) {
+    let arrSocketConnectionCall = arrSocketConnection.pop();
+    connectionRoom = connectionRoom.filter(item => item !== arrSocketConnectionCall);
+    createHistory({ room_id : arrSocketConnectionCall })
+    console.log('leave_room (tu dong thoat tag) => ', arrSocketConnectionCall)
+    io.emit('leave_room_alert_admin', {room_id: arrSocketConnectionCall});
+  }
+}
 
 db.connect()
 // router(app)

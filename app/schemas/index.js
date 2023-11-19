@@ -1,5 +1,5 @@
-const roomSchema = require('./room');
+const historySchema = require('./history');
 
 module.exports = {
-    roomSchema,
+    historySchema,
 };

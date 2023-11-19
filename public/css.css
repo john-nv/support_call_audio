@@ -44,6 +44,11 @@ body {
     background-color: rgb(249 212 212);
 }
 
+.mes-done{
+    border: 1px solid black;
+    background-color: rgb(215 215 219);
+}
+
 .inbox-m-main {
     border-radius: 25px;
     background-color: white;
@@ -58,7 +63,7 @@ body {
 
 .inbox-m-check {
     overflow-y: scroll;
-    height: 90vh;
+    height: 80vh;
     /* border-top: 1px solid var(--icon);
     border-bottom: 1px solid var(--icon); */
     padding-top: 10px;
@@ -140,12 +145,10 @@ body {
 }
 
 .btn-call-accept {
-    margin-left: 20px;
     background-color: #0ac66b;
 }
 
 .btn-call-close {
-    margin-right: 20px;
     background-color: red;
 }
 
@@ -178,7 +181,7 @@ body {
     padding: 17px;
     border: 1px solid var(--highlight);
     background-color: white;
-    height: 95vh;
+    height: 80vh;
     border-radius: 25px;
     margin: 10px;
     text-align: center;
