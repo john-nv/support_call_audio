@@ -291,7 +291,7 @@ function formatTime(value) {
 // ================================= LOGIN =======================
 
 const _ = localStorage.getItem('_')
-if(_.length < 1 || !_){
+if (!_ || _.length < 1) {
   $('#dialog_login').modal('show')
 }else{
   $.ajax({
