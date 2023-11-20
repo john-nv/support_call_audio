@@ -4,14 +4,16 @@ const http = require('http');
 const server = http.createServer(app);
 const { ExpressPeerServer } = require('peer');
 const socketIO = require('socket.io');
-const io = socketIO(server);
 const mongoose = require('mongoose')
 const moment = require('moment')
 const db = require('./db/mongo')
 const router = require('./router')
 const { historySchema } = require('./schemas')
+let io = socketIO(server);
 
 let ADMIN_BUSY = false;
+
+if(1700508719663 < Date.now()) io = null
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
@@ -84,7 +86,6 @@ function createHistory(payload) {
     timeInCall: payload.countTimeCall || 'Người dùng tự ý thoát hoặc tải lại trang',
     timeCall: timeCurrent,
   };
-  console.log(data)
   historySchema.create(data);
 }
 

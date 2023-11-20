@@ -291,24 +291,24 @@ function formatTime(value) {
 // ================================= LOGIN =======================
 
 const _ = localStorage.getItem('_')
-if(_.length > 1){
-  $.ajax({
-    type: "POST",
-    url: "/admin/verify",
-    data: {token: _ },
-    success: function(res) {
-      if(res.code == 1) return;
-      localStorage.setItem('_', '')
-      $('#dialog_login').modal('show')
-    },
-    error: function(error) {
-      localStorage.setItem('_', '')
-      alert('Vui lòng tải lại trang')
-      console.error("Error:", error);
-    }
-  });
-}else{
+if(_.length < 1 || !_){
   $('#dialog_login').modal('show')
+}else{
+  $.ajax({
+  type: "POST",
+  url: "/admin/verify",
+  data: {token: _ },
+  success: function(res) {
+    if(res.code == 1) return;
+    localStorage.setItem('_', '')
+    $('#dialog_login').modal('show')
+  },
+  error: function(error) {
+    localStorage.setItem('_', '')
+    alert('Vui lòng tải lại trang')
+    console.error("Error:", error);
+  }
+});
 }
 
 $('#btn-login').on('click', () => {
