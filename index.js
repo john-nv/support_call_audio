@@ -9,10 +9,11 @@ const mongoose = require('mongoose')
 const moment = require('moment')
 const db = require('./db/mongo')
 const router = require('./router')
-const { historySchema } = require('./app/schemas')
+const { historySchema } = require('./schemas')
 
 let ADMIN_BUSY = false;
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.use((req, res, next) => {
@@ -25,22 +26,14 @@ const peerServer = ExpressPeerServer(server, { debug: true,});
 
 app.use('/peerjs', peerServer);
 
+router(app)
+
 app.post('/api/user/call', (req, res) => {
   res.json(ADMIN_BUSY)
 });
 
 app.get('/admin', (req, res) => {
   res.sendFile(__dirname + '/public/admin.html');
-});
-
-app.get('/history', async (req, res) => {
-  try {
-      const data = await historySchema.find().sort({ createdAt: -1 });
-      res.json(data);
-  } catch (error) {
-      console.error('Error fetching history:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-  }
 });
 
 app.get('/', (req, res) => {
@@ -85,10 +78,10 @@ io.on('connection', (socket) => {
 function createHistory(payload) {
   const timeCurrent = getTimeCurrent();
   const data = {
-    nameUser: payload.nameUser || 'không xác định',
-    whoEndCall: payload.whoIsEndCall || 'không xác định',
-    idRoom: payload.room_id || 'không xác định',
-    timeInCall: payload.countTimeCall || 'không xác định',
+    nameUser: payload.nameUser || 'Người dùng tự ý thoát hoặc tải lại trang',
+    whoEndCall: payload.whoIsEndCall || 'Người dùng tự ý thoát hoặc tải lại trang',
+    idRoom: payload.room_id || 'Người dùng tự ý thoát hoặc tải lại trang',
+    timeInCall: payload.countTimeCall || 'Người dùng tự ý thoát hoặc tải lại trang',
     timeCall: timeCurrent,
   };
   console.log(data)
@@ -112,7 +105,6 @@ function checkLeaveRoomCall(socketId){
 }
 
 db.connect()
-// router(app)
 
 const PORT = process.env.PORT || 3333;
 server.listen(PORT, () => {

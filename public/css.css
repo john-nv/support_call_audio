@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@700&display=swap');
+
+
 :root {
     --white: white;
     --highlight: #47E398;
@@ -9,9 +12,9 @@
     --font-weight-low: 400;
     --font-weight-hight: 500;
     --text-watched: #8f9794;
-    --border: #d9d9d9;
+    --border: #ffffff;
     --text-no-watched: black;
-    --border-solid:
+    --border-solid:  #2e2e2e;
 
 }
 
@@ -21,17 +24,24 @@
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--scroll-color);
+    background-color: black;
     border-radius: 20px;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: #f1f1f1;
+    background-color: var(--border-solid);;
     border-radius: 20px;
 }
 
 body {
-    background-color: #c0c4c3;
+    background-color: black;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
+
+p, label, span {
+    color: white;
+    font-family: 'Montserrat', sans-serif;
 }
 
 .mes-active{
@@ -41,20 +51,20 @@ body {
 
 .mes-cancel{
     border: 1px solid black;
-    background-color: rgb(249 212 212);
+    background-color: #421a2c;
 }
 
 .mes-done{
     border: 1px solid black;
-    background-color: rgb(215 215 219);
+    background-color: #13263c;
 }
 
 .inbox-m-main {
     border-radius: 25px;
-    background-color: white;
+    background-color: #171f2e;
     padding: 30px 15px 30px 15px;
-    margin: 20px;
-    border: 1px solid var(--inbox-name-highlight);
+    margin: 15px 0px 15px 0px;
+    border: 1px solid var(--border-solid);
 }
 
 .inbox-m-content{
@@ -72,7 +82,7 @@ body {
 
 .inbox-m {
     display: flex;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-solid);
     border-radius: 15px;
     margin-bottom: 5px;
 }
@@ -95,7 +105,7 @@ body {
 .inbox-m-name>span {
     font-weight: 600;
     font-size: 18px;
-    color: var(--inbox-name-highlight);
+    color: black;
 }
 
 .inbox-m-time>span {
@@ -110,10 +120,10 @@ body {
 }
 
 .inbox-m-show-main-content {
-    margin-top: 10%;
+    margin-top: 5%;
 
     width: 250px;
-    height: 200px;
+    height: 260px;
     background-color: #47E398;
     text-align: center;
     border-radius: 20px;
@@ -179,8 +189,8 @@ body {
 
 .u-main {
     padding: 17px;
-    border: 1px solid var(--highlight);
-    background-color: white;
+    border: 1px solid var(--border-solid);
+    background-color: #171f2e;
     height: 80vh;
     border-radius: 25px;
     margin: 10px;
@@ -219,4 +229,57 @@ body {
 
 .btn-call-user-cancel{
     background-color: rgb(214, 104, 104);
+}
+
+#dialog-content {
+    background-color: #13263c;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-admin-custom{
+    border-radius: 20px;
+}
+
+#control-admin-main{
+    height: auto;
+    overflow: hidden;
+    overflow-y: scroll;
+    background-color: #171f2e;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 20px;
+    margin-bottom: 50px;
+
+}
+
+.history-call-item{
+    padding: 10px 15px 10px 15px;
+    border: 1px solid var(--border-solid);
+    border-radius: 10px;
+    background-color: #13263c;
+}
+
+.history-call-item{
+    padding: 10px 15px 10px 15px;
+    border: 1px solid var(--border-solid);
+    border-radius: 10px;
+    background-color: #13263c;
+}
+
+.history-call-item-accept{
+    background-color: #13263c;
+}
+
+.history-call-item-busy{
+    background-color: #421a2c;
+}
+
+.form-control,
+.form-control:focus,
+.form-control:active {
+    background-color: black;
+    color: white;
+    border-color: var(--border-solid);
+    border-radius: 10px;
 }

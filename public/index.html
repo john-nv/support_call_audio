@@ -18,7 +18,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
     />
     <link rel="stylesheet" href="./css.css" />
-    <title>Help</title>
+    <title>Hỗ trợ khách hàng</title>
+    <link rel="shortcut icon" type="image/png" href="/img/helpAudioCall.png"/>
   </head>
   <body>
     <!-- <textarea id="value-mes"></textarea><button id="send-mes">Gui</button> -->
@@ -37,21 +38,22 @@
     </div>
 
     <!-- open dialog -->
-    <div class="modal fade" id="dialog_alert" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="dialog_alert" tabindex="-1" aria-hidden="true" data-backdrop="static">
       <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-content" id="dialog-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Hỗ trợ khách hàng&ensp;<i class="fa-solid fa-headset"></i></span></h5>
+            <h5 class="modal-title" style="font-weight: 600;" id="exampleModalLabel">Hỗ trợ khách hàng&ensp;<i class="fa-solid fa-headset"></i></span></h5>
           </div>
           <div class="modal-body">
             <input type="text" id="getNameUser" class="form-control" placeholder="Nhập tên của bạn ....">
           </div>
           <div class="modal-footer">
-            <button type="button" id="btnGetNameUser" class="btn btn-success">Bắt đầu</button>
+            <button type="button" id="btnGetNameUser" class="btn btn-primary">Bắt đầu</button>
           </div>
         </div>
       </div>
     </div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script

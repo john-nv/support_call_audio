@@ -179,7 +179,9 @@ function joinRoom(room_id) {
 
   peer.on('error', (err) => {
       console.error('Admin Peer error:', err);
-      alert('phong nay khong ton lai, vui long tai lai trang')
+      $('#dialog_alert_admin_content').html('Người dùng đã thoát')
+      $('#dialog_alert_admin').modal('show')
+      $('.inbox-m-show-main').html('')
   });
 
   peer.on('close', () => {
@@ -257,7 +259,6 @@ function endCalling(){
   ringRingVoice.currentTime = 0;
 }
 
-
 // ========================================== COUNT TIME CALL ==========================================
 
 function startTimeCall() {
@@ -285,4 +286,255 @@ function updateStatusCountTimeCall() {
 
 function formatTime(value) {
   return value < 10 ? `0${value}` : value;
+}
+
+// ================================= LOGIN =======================
+
+const _ = localStorage.getItem('_')
+if(_.length > 1){
+  $.ajax({
+    type: "POST",
+    url: "/admin/verify",
+    data: {token: _ },
+    success: function(res) {
+      if(res.code == 1) return;
+      localStorage.setItem('_', '')
+      $('#dialog_login').modal('show')
+    },
+    error: function(error) {
+      localStorage.setItem('_', '')
+      alert('Vui lòng tải lại trang')
+      console.error("Error:", error);
+    }
+  });
+}else{
+  $('#dialog_login').modal('show')
+}
+
+$('#btn-login').on('click', () => {
+  const user = $('#l-username').val()
+  const pass = $('#l-password').val()
+  validateLogin(user, pass)
+  $.ajax({
+    type: "POST",
+    url: "/admin/login",
+    data: {user, pass},
+    success: function(res) {
+      if(res.code != 1) return alert(res.message);
+
+      localStorage.setItem('_', res.jwt)
+      $('#dialog_login').modal('hide');
+    },
+    error: function(error) {
+      alert('Lỗi chương trình')
+      console.error("Error:", error);
+    }
+  });
+})
+
+
+function validateLogin(user, pass){
+  if(user.length < 1 || pass.length < 1) alert('Mật khẩu hoặc mật khẩu không được trống')
+}
+
+// ============================= CONTROL ========================
+
+$(document).on('click', '#btn-exit-table-control', function() {
+  $('#control-admin-main').css('height', 'auto');
+  $('#control-admin-main').html('<h4 style="text-align: center; color: white;">Bảng điều kiển Admin</h4>')
+})
+
+$('#btn-edit-platforms-user').on('click', () => {
+  const token = localStorage.getItem('_')
+  $.ajax({
+    type: "POST",
+    url: "/admin/getConfig",
+    data: {token},
+    success: function(res) {
+      if(res.code != 1) {
+        
+        $('#dialog_alert_admin_content').html(error.responseJSON.message)
+        $('#dialog_alert_admin').modal('show')
+        return 
+      };
+      const data = res.data
+      $('#control-admin-main').html(`
+      <h4 style="text-align: center; color: white;">Chỉnh sửa chi tiết người dùng</h4><hr>
+      <hr>
+      <div class="form-row">
+        <div class="col-md-4 mb-3">
+          <label style="color: #5a5a5a;" for="validationTimeCall">Thời gian chờ nghe máy (tính theo giây)</label>
+          <input type="text" class="form-control" id="validationTimeCall" value="${data.timeAwaitUser}" placeholder="Thời gian chờ nghe máy (tính theo giây)">
+        </div>
+        <div class="col-md-4 mb-3">
+          <label style="color: #5a5a5a;" for="validationTitle">Tiêu đề chào mừng nhập tên</label>
+          <input type="text" class="form-control" id="validationTitle" value="${data.titleUser}" placeholder="Tiêu đề chào mừng nhập tên">
+        </div>
+        <div class="col-md-4 mb-3">
+                <label style="color: #5a5a5a;" for="validationTitleHome">Tiêu đề </label>
+          <input type="text" class="form-control" id="validationTitleHome" value="${data.titleHome}" placeholder="Tiêu đề ">
+        </div>
+      </div>
+      <label style="color: #5a5a5a;" for="validationStatusStart">Trang thái bắt đầu gọi</label>
+      <input type="text" class="form-control mb-3" id="validationStatusStart" value="${data.msgStart}" placeholder="Trang thái bắt đầu gọi">
+      <label style="color: #5a5a5a;" for="validationStatusBusy">Trang thái hỗ trợ viên bận hoặc không nhắc máy</label>
+      <input type="text" class="form-control mb-3" id="validationStatusBusy" value="${data.msgBusy}" placeholder="Trang thái hỗ trợ viên bận hoặc không nhắc máy">
+      <label style="color: #5a5a5a;" for="validationStatusDone">Trang thái người dùng đã hoàn thành xong cuộc gọi</label>
+      <input type="text" class="form-control mb-3" id="validationStatusDone" value="${data.msgDone}" placeholder="Trang thái người dùng đã hoàn thành xong cuộc gọi">
+      <label style="color: #5a5a5a;" for="validationStatusConnect">Trang thái người dùng đang kết nối</label>
+      <input type="text" class="form-control mb-3" id="validationStatusConnect" value="${data.msgConnect}" placeholder="Trang thái người dùng đang kết nối">
+      <div class="d-flex justify-content-between mt-4">
+        <div></div>
+        <div>
+          <button class="btn btn-secondary btn-admin-custom" id="btn-exit-table-control">Thoát</button>
+          <button class="btn btn-success btn-admin-custom" id="btn-edit-platforms-user-save">Lưu thay đổi</button>
+        </div>
+      </div>`)
+    },
+    error: function(error) {
+      $('#dialog_alert_admin_content').html(error.responseJSON.message)
+      $('#dialog_alert_admin').modal('show')
+      console.error("Error:", error);
+    }
+  });
+})
+
+$(document).on('click', '#btn-clear-all-history', function() {
+
+})
+
+$(document).on('click', '#btn-get-history', function() {
+  $('#control-admin-main').css('height', '600px');
+  const token = localStorage.getItem('_')
+    $.ajax({
+      type: "POST",
+      url: "/admin/getHistoryCall",
+      data: {token},
+      success: function(res) {
+        if(res.code != 1) {
+          $('#dialog_alert_admin_content').html(res.message)
+          $('#dialog_alert_admin').modal('show')
+          return
+        };
+        const data = res.items
+        $('#control-admin-main').html('')
+        $('#control-admin-main').append('<h4 style="text-align: center; color: white;">Lịch sử cuộc gọi</h4><hr>')
+        $('#control-admin-main').append(`<div class="d-flex justify-content-between mt-4">
+                                          <div>
+                                            <button class="btn btn-danger btn-admin-custom" id="btn-clear-all-history">Xóa toàn bộ lịch sử</button>
+                                          </div>
+                                          <div>
+                                            <button class="btn btn-secondary btn-admin-custom" id="btn-exit-table-control">Thoát</button>
+                                          </div>
+                                        </div><hr>`)
+        for (let i = 0; i < data.length; i++) {
+          const classColor = data[i].timeInCall == '00:00:00' ? 'history-call-item-busy' : 'history-call-item-accept'
+          const timeRight = moment(data[i].createdAt).format('HH:mm:ss DD/MM/YYYY');
+
+          const item = `<div class="history-call-item mb-2 ${classColor}">
+                          <span class="history-call-name">Tên người gọi : </span>
+                          <span class="font-weight-bold">${data[i].nameUser}</span><br>
+                          <span class="history-call-end-call">Người kêt thúc cuộc gọi trước : </span>
+                          <span class="font-weight-bold">${data[i].whoEndCall}</span><br>
+                          <span class="history-call-time-call">Thời gian trong cuộc gọi : </span>
+                          <span class="font-weight-bold">${data[i].timeInCall}</span><br>
+                          <span class="history-call-time-created">Thời gian gọi : </span>
+                          <span class="font-weight-bold">${data[i].timeCall} ( ${timeRight} )</span><br>
+                          <span class="history-call-id-call">ID cuộc gọi : </span>
+                          <span class="font-weight-bold">${data[i]._id}</span><br>
+                          <span class="history-call-id-room">ID phòng gọi : </span>
+                          <span class="font-weight-bold">${data[i].idRoom}</span><br>
+                        </div>`
+          $('#control-admin-main').append(item)
+        }
+        
+        
+        $('#dialog_alert_admin_content').html(`Kho lưu trữ đang lưu trữ ${res.total} cuộc gọi`)
+        $('#dialog_alert_admin').modal('show')
+        
+      },
+      error: function(error) {
+        $('#dialog_alert_admin_content').html(error.responseJSON.message)
+        $('#dialog_alert_admin').modal('show')
+        console.error("Error:", error);
+      }
+    });
+})
+
+$(document).on('click', '#btn-edit-platforms-user-save', function() {
+  const validationTimeCall = Number($('#validationTimeCall').val())
+  const validationTitle = $('#validationTitle').val()
+  const validationTitleHome = $('#validationTitleHome').val()
+  const validationStatusStart = $('#validationStatusStart').val()
+  const validationStatusBusy = $('#validationStatusBusy').val()
+  const validationStatusDone = $('#validationStatusDone').val()
+  const validationStatusConnect = $('#validationStatusConnect').val()
+  const isCheckValidate = validateEditPlatforms(validationTimeCall, validationTitle, validationTitleHome, 
+    validationStatusStart, validationStatusBusy, validationStatusDone, validationStatusConnect) 
+  if(isCheckValidate.isValid){
+    const token = localStorage.getItem('_')
+    $.ajax({
+      type: "POST",
+      url: "/admin/config",
+      data: {
+          token, 
+          timeAwaitUser: validationTimeCall, 
+          titleUser: validationTitle, 
+          titleHome: validationTitleHome, 
+          msgStart: validationStatusStart, 
+          msgBusy: validationStatusBusy, 
+          msgDone: validationStatusDone, 
+          msgConnect: validationStatusConnect
+        },
+      success: function(res) {
+        if(res.code != 1) {
+          $('#dialog_alert_admin_content').html(res.message)
+          $('#dialog_alert_admin').modal('show')
+          return
+        };
+        $('#dialog_alert_admin_content').html('Lưu thành công')
+        $('#dialog_alert_admin').modal('show')
+        $('#btn-exit-table-control').click()
+      },
+      error: function(error) {
+        $('#dialog_alert_admin_content').html(error.responseJSON.message)
+        $('#dialog_alert_admin').modal('show')
+        console.error("Error:", error);
+      }
+    });
+  }else{
+    console.log(isCheckValidate.errors)
+    $('#dialog_alert_admin_content').html(`Kiểm tra đúng các định dạng <br> Thời gian giờ phải là số và ít nhất là 5s và không được lớn hơn 300s (5phút) <br> Các câu trạng thái ít nhất chứa 5 kí tự <br><br>${isCheckValidate.errors}`)
+    $('#dialog_alert_admin').modal('show')
+  }
+})
+
+$('#btn-logout').on('click', () => {
+  localStorage.setItem('_', '')
+  location.reload(true);
+})
+
+function validateEditPlatforms(validationTimeCall, validationTitle, validationTitleHome, 
+  validationStatusStart, validationStatusBusy, validationStatusDone, validationStatusConnect) {
+
+  const isNumeric = (value) => /^\d+$/.test(value); 
+  const isStringLengthValid = (value, minLength) => value.length >= minLength; 
+  const isTimeCallValid = (value) => isNumeric(value) && parseInt(value) > 10;
+  const isStringValid = (value) => isStringLengthValid(value, 5);
+
+  const isTimeCallNaN = isNaN(parseInt(validationTimeCall));
+  let errors = '';
+
+  if (isTimeCallNaN) errors = 'Thời gian chờ nghe máy (tính theo giây) không phải là số.';
+  if (!isTimeCallValid(validationTimeCall)) errors = 'Thời gian chờ nghe máy (tính theo giây) không hợp lệ.';
+  if (!isStringValid(validationTitle)) errors = 'Tiêu đề chào mừng nhập tên không hợp lệ.';
+  if (!isStringValid(validationTitleHome)) errors = 'Tiêu đề không hợp lệ.';
+  if (!isStringValid(validationStatusStart)) errors = 'Trang thái bắt đầu gọi không hợp lệ.';
+  if (!isStringValid(validationStatusBusy)) errors = 'Trang thái hỗ trợ viên bận hoặc không nhắc máy không hợp lệ.';
+  if (!isStringValid(validationStatusDone)) errors = 'Trang thái người dùng đã hoàn thành xong cuộc gọi không hợp lệ.';
+  if (!isStringValid(validationStatusConnect)) errors = 'Trang thái người dùng đang kết nối không hợp lệ.';
+
+  const isValid = Object.keys(errors).length === 0;
+
+  return { isValid, errors };
 }

@@ -1,7 +1,7 @@
-const userCall = require('./userCall')
+const admin = require('./admin')
 
 function router(app) {
-  app.use('/user', userCall)
+  app.use('/admin', admin)
 }
 
 module.exports = router

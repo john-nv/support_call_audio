@@ -27,6 +27,7 @@ let countdownInterval
 
 const html_btn_call = '<button onclick="startCallAdmin()" class="btn btn-call btn-call-user-call"><i class="fa-solid fa-phone"></i></button>'
 const html_btn_cancel = '<button onclick="stopCallAdmin()" class="btn btn-call btn-call-user-cancel"><i class="fa-solid fa-xmark"></i></button>'
+const html_btn_loading = '<button class="btn btn-call"><i class="fa-solid fa-spinner"></i></button>'
 
 // ===== COUNT TIME CALL =======
 let secondsCountDown = 0
@@ -57,6 +58,7 @@ function stopCallAdmin() {
 }
 
 function startCallAdmin(){
+    $('.control-call-user').html(html_btn_loading)
     statusChange(2)
     $.ajax({
         url: `/api/user/call`,
@@ -67,9 +69,9 @@ function startCallAdmin(){
                 statusChange(1)
                 $('.control-call-user').html(html_btn_call)
             }else{
-                $('.control-call-user').html('loading...')
                 console.log('dang goi ...')
-                createRoom()
+                // createRoom()
+                createRoomWithRetry()
             }
         },
         error: function(error) {
@@ -78,45 +80,63 @@ function startCallAdmin(){
     });
 }
 
-function createRoom() {
-    room_id = socket.id + Date.now();
-    peer = new Peer(room_id)
-    peer.on('open', (id) => {
-        peer_id = id;
+function createRoomWithRetry() {
+    let roomCreated = false;
 
-        console.log("Peer ID  : ", peer_id);
-        console.log("SOCKET ID: ", socket.id);
-        console.log("room_id  : ", room_id);
+    function createRoom() {
+        room_id = socket.id + Date.now();
+        peer = new Peer(room_id);
 
-        navigator.getUserMedia({ audio: true }, (stream) => {
-            local_stream = stream;
-            console.log('User info :', local_stream);
-            room_id_for_my = room_id
-            socket.emit('create_room', { peer_id: id, room_id: room_id, nameUser: nameUser });
-            $('.control-call-user').html(html_btn_cancel)
+        peer.on('open', (id) => {
+            peer_id = id;
 
-            calling();
-            startCountdownCallAndLeaveRoom()
-        }, (err) => {
-            console.log('User getUserMedia error:', err);
+            console.log("Peer ID  : ", peer_id);
+            console.log("SOCKET ID: ", socket.id);
+            console.log("room_id  : ", room_id);
+
+            navigator.getUserMedia({ audio: true }, (stream) => {
+                local_stream = stream;
+                console.log('User info :', local_stream);
+                room_id_for_my = room_id;
+                socket.emit('create_room', { peer_id: id, room_id: room_id, nameUser: nameUser });
+                $('.control-call-user').html(html_btn_cancel);
+
+                calling();
+                startCountdownCallAndLeaveRoom();
+                roomCreated = true;
+            }, (err) => {
+                console.log('User getUserMedia error:', err);
+                // Set roomCreated to false in case of error
+                roomCreated = false;
+            });
         });
-    });
 
-    peer.on('call', (call) => {
-        call.answer(local_stream);
-        console.log('audio de truyen audio den admin ', local_stream)
-        call.on('stream', (stream) => {
-            console.log('nhan duoc cuoc goi');
-            endCalling()
-            startEndCall.play()
-            startTimeCall()
-            stopCountdownCallAndLeaveRoom()
-            console.log('nhan duoc audio tu admin :', stream);
-            setRemoteAudioStream(stream);
+        peer.on('call', (call) => {
+            call.answer(local_stream);
+            console.log('audio de truyen audio den admin ', local_stream)
+            call.on('stream', (stream) => {
+                console.log('nhan duoc cuoc goi');
+                endCalling();
+                startEndCall.play();
+                startTimeCall();
+                stopCountdownCallAndLeaveRoom();
+                console.log('nhan duoc audio tu admin :', stream);
+                setRemoteAudioStream(stream);
+            });
+            currentPeer = call;
         });
-        currentPeer = call;
-    });
+    }
+
+    createRoom();
+
+    setTimeout(() => {
+        if (!roomCreated) {
+            console.log("Failed to create room. Retrying...");
+            createRoomWithRetry();
+        }
+    }, 2000);
 }
+
 
 // nhan ngat du lieu tu admin
 socket.on('leave_room_admin', payload => {
