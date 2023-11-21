@@ -18,9 +18,28 @@ let nameUser = 'Khong xac dinh'
 let statusCall=0
 let isCall=false
 let audio = document.getElementById("remote-audio");
-const countDownDelayCallBusyValueDefault = 10
+let countDownDelayCallBusyValueDefault = 60
 let countDownDelayCallBusy = countDownDelayCallBusyValueDefault;
 let room_id_for_my = ''
+
+// 0 => HELP
+// 1 => BUSY
+// 2 => CONNECT_PENDING
+// 3 => CANCEL_CALL
+// 4 => END_CALL
+
+let STATUS_CALL = {
+    HELP: 'Ấn nút gọi để gặp tổng đài viên',
+    TIME_AWAIT_CALL: countDownDelayCallBusyValueDefault,
+    TITLE: 'Hỗ trợ khách hàng',
+    TITLE_HOME: 'Hỗ trợ khách hàng',
+    HELP: 'Ấn nút gọi để gặp tổng đài viên',
+    BUSY: 'Tạm thời các tổng đài viên đang bận, vui lòng liên lạc lại sau...',
+    CONNECT_PENDING: 'Đang kết nối đến hỗ trợ viên, vui lòng đợi...',
+    CANCEL_CALL: 'Ấn để ngắt kết nối...',
+    END_CALL: 'Cảm ơn bạn đã liên hệ, nếu cần hỗ trợ thêm hãy liên hệ lại chúng tôi. Thân gửi !',
+    ERROR: 'Hệ thống lỗi vui lòng liên hệ lại sau',
+}
 
 // dount thoi gian tu dong thoat 
 let countdownInterval
@@ -34,7 +53,6 @@ let secondsCountDown = 0
 let intervalCountTimeCall
 let countTimeCall = '00:00:00'
 
-$('#dialog_alert').modal('show')
 $('#btnGetNameUser').on('click', () => {
     const name = $('#getNameUser').val()
     console.log(name)
@@ -45,6 +63,36 @@ $('#btnGetNameUser').on('click', () => {
         $('#dialog_alert').modal('hide')
     }
 })
+
+$(document).ready(function() {
+    const token = localStorage.getItem('_')
+    $.ajax({
+        type: "POST",
+        url: "/admin/getConfig",
+        data: { token },
+        success: function (res) {
+            if (res.code != 1) return;
+            console.log(res.data)
+            STATUS_CALL.HELP = res.data.msgStart;
+            STATUS_CALL.BUSY = res.data.msgBusy;
+            STATUS_CALL.CONNECT_PENDING = res.data.msgConnect;
+            STATUS_CALL.END_CALL = res.data.msgDone;
+            STATUS_CALL.TITLE = res.data.titleUser;
+            STATUS_CALL.TITLE_HOME = res.data.titleHome;
+            STATUS_CALL.TIME_AWAIT_CALL = res.data.timeAwaitUser;
+            countDownDelayCallBusyValueDefault = res.data.timeAwaitUser;
+
+            $('#title_welcome').html(STATUS_CALL.TITLE_HOME);
+            $('#title_dialog').html(STATUS_CALL.TITLE);
+            $('#dialog_alert').modal('show');
+        },
+        error: function (error) {
+            console.log('Không load được config từ admin');
+            console.error("Error:", error);
+        }
+    });
+});
+
 function stopCallAdmin() {
     leaveRoom(4, true)
 
@@ -85,6 +133,7 @@ function createRoomWithRetry() {
 
     function createRoom() {
         room_id = socket.id + Date.now();
+        peer = null
         peer = new Peer(room_id);
 
         peer.on('open', (id) => {
@@ -132,7 +181,7 @@ function createRoomWithRetry() {
     setTimeout(() => {
         if (!roomCreated) {
             console.log("Failed to create room. Retrying...");
-            createRoomWithRetry();
+            createRoomWithRetry()
         }
     }, 2000);
 }
@@ -271,21 +320,6 @@ function stopCountdownCallAndLeaveRoom() {
         countdownInterval = null;
     }
     countDownDelayCallBusy = countDownDelayCallBusyValueDefault;
-}
-
-// 0 => HELP
-// 1 => BUSY
-// 2 => CONNECT_PENDING
-// 3 => CANCEL_CALL
-// 4 => END_CALL
-
-const STATUS_CALL = {
-    HELP: 'Ấn nút gọi để gặp tổng đài viên',
-    BUSY: 'Tạm thời các tổng đài viên đang bận, vui lòng liên lạc lại sau...',
-    CONNECT_PENDING: 'Đang kết nối đến hỗ trợ viên, vui lòng đợi...',
-    CANCEL_CALL: 'Ấn để ngắt kết nối...',
-    END_CALL: 'Cảm ơn bạn đã liên hệ, nếu cần hỗ trợ thêm hãy liên hệ lại chúng tôi. Thân gửi !',
-    ERROR: 'Hệ thống lỗi vui lòng liên hệ lại sau',
 }
 
 

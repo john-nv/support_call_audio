@@ -349,7 +349,6 @@ $('#btn-edit-platforms-user').on('click', () => {
   $.ajax({
     type: "POST",
     url: "/admin/getConfig",
-    data: {token},
     success: function(res) {
       if(res.code != 1) {
         
@@ -400,7 +399,23 @@ $('#btn-edit-platforms-user').on('click', () => {
 })
 
 $(document).on('click', '#btn-clear-all-history', function() {
-
+  const token = localStorage.getItem('_')
+  $.ajax({
+    type: "POST",
+    url: "/admin/deleteAllHistoryCall",
+    data: {token},
+    success: function(res) {
+      if(res.code != 1) return
+      $('#btn-exit-table-control').click()
+      $('#dialog_alert_admin_content').html(res.message)
+      $('#dialog_alert_admin').modal('show')
+    },
+    error: function(error) {
+      $('#dialog_alert_admin_content').html(error.responseJSON.message)
+      $('#dialog_alert_admin').modal('show')
+      console.error("Error:", error);
+    }
+  });
 })
 
 $(document).on('click', '#btn-get-history', function() {
@@ -504,7 +519,7 @@ $(document).on('click', '#btn-edit-platforms-user-save', function() {
     });
   }else{
     console.log(isCheckValidate.errors)
-    $('#dialog_alert_admin_content').html(`Kiểm tra đúng các định dạng <br> Thời gian giờ phải là số và ít nhất là 5s và không được lớn hơn 300s (5phút) <br> Các câu trạng thái ít nhất chứa 5 kí tự <br><br>${isCheckValidate.errors}`)
+    $('#dialog_alert_admin_content').html(`Kiểm tra đúng các định dạng <br> Thời gian giờ phải là số và ít nhất là 20s và không được lớn hơn 300s (5phút) <br> Các câu trạng thái ít nhất chứa 5 kí tự <br><br>${isCheckValidate.errors}`)
     $('#dialog_alert_admin').modal('show')
   }
 })

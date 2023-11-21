@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@700&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@500&display=swap');
 
 :root {
     --white: white;
@@ -35,13 +34,13 @@
 
 body {
     background-color: black;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playpen Sans', sans-serif;;
     font-weight: 500;
 }
 
-p, label, span {
+p, label, span, h1, h2, h3, h4, h5, h6, h7 {
     color: white;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Playpen Sans', sans-serif;;
 }
 
 .mes-active{
@@ -204,7 +203,7 @@ p, label, span {
 }
 
 .u-content{
-    font-size: 24px;
+    font-size: 20px;
 }
 
 .btn-call-user-call{
@@ -254,6 +253,7 @@ p, label, span {
 }
 
 .history-call-item{
+    overflow: hidden;
     padding: 10px 15px 10px 15px;
     border: 1px solid var(--border-solid);
     border-radius: 10px;

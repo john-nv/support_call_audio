@@ -18,11 +18,11 @@ class adminControllers {
 
     async deleteAllHistoryCall(req, res) {
       try {
-          const data = await historySchema.find();
-          res.status(200).json({code: 1, total: data.length, items: data});
+          await historySchema.deleteMany();
+          res.status(200).json({code: 1, message: 'Đã xóa toàn bộ kho lưu trữ cuộc gọi'});
       } catch (error) {
           console.error('Error fetching history:', error);
-          res.status(500).json({ code: 0, message: 'Internal Server Error' });
+          res.status(500).json({ code: 0, message: 'Lỗi server' });
       }
   }
 
@@ -100,11 +100,8 @@ class adminControllers {
     async getConfig(req, res) {
       try {
         const data = await configSchema.findOne({ _id: '655b8b37f1a2029969205f9f' });
-    
-        if (!data) {
-          return res.status(404).json({ code: 0, message: 'Không tìm thấy cấu hình' });
-        }
-    
+        if (!data) return res.status(404).json({ code: 0, message: 'Không tìm thấy cấu hình' });
+        
         return res.status(200).json({ code: 1, message: 'Thành công', data });
       } catch (error) {
         console.error(error);
