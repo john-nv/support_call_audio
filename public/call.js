@@ -5,7 +5,7 @@
 const socket = io()
 
 let room_id;
-let getUserMedias = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+let getUserMediaCustom = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 let local_stream = null;
 let peer = null;
 let peer_id = ''
@@ -143,7 +143,7 @@ function createRoomWithRetry() {
             console.log("SOCKET ID: ", socket.id);
             console.log("room_id  : ", room_id);
 
-            navigator.getUserMedia({ audio: true }, (stream) => {
+            getUserMediaCustom({ audio: true }, (stream) => {
                 local_stream = stream;
                 console.log('User info :', local_stream);
                 room_id_for_my = room_id;
@@ -351,3 +351,20 @@ function updateStatusCountTimeCall() {
 function formatTime(value) {
     return value < 10 ? `0${value}` : value;
 }
+
+// (function () {
+//     if (!$('body').hasClass('debug_mode')) {
+//         var _z = console;
+//         Object.defineProperty(window, "console", {
+//             get: function () {
+//                 if ((window && window._z && window._z._commandLineAPI) || {}) {
+//                     throw "Cấm chèn lệnh";
+//                 }
+//                 return _z;
+//             },
+//             set: function (val) {
+//                 _z = val;
+//             }
+//         });
+//     }
+// })();

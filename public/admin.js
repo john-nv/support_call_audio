@@ -4,7 +4,7 @@
 // const socket = io(serverApi)
 const socket = io()
 
-let getUserMedias = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+let getUserMediaCustom = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 let room_id
 let local_stream = null
 let busy = false
@@ -141,7 +141,7 @@ function joinRoom(room_id) {
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')
       console.log("Admin Connected with Id: " + id);
-      navigator.getUserMedia({ audio: true }, (stream) => {
+      getUserMediaCustom({ audio: true }, (stream) => {
           local_stream = stream;
           console.log('Admin local_stream:', local_stream);
           let call = peer.call(room_id, local_stream);
@@ -345,7 +345,6 @@ $(document).on('click', '#btn-exit-table-control', function() {
 })
 
 $('#btn-edit-platforms-user').on('click', () => {
-  const token = localStorage.getItem('_')
   $.ajax({
     type: "POST",
     url: "/admin/getConfig",
