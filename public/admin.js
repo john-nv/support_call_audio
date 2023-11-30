@@ -133,7 +133,7 @@ $(document).on('click', '.inbox-m', function() {
 });
 
 async function joinRoom(room_id) {
-  peer = await new Peer({host: '/', port: 9000,});
+  peer = await new Peer({host: '127.0.0.1', port: 9000,});
   console.log('peer => ', peer)
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')
