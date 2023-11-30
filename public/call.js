@@ -115,11 +115,7 @@ function startCallAdmin(){
 function createRoom() {
     room_id = socket.id + Date.now();
     peer = null
-    peer = new Peer(room_id, {
-        host: '38.242.159.108',
-		port: 9000,
-		path: "/",
-    });
+    peer = new Peer(room_id, {host: '/', port: 9000,});
 
     peer.on('open', (id) => {
         peer_id = id;
@@ -127,8 +123,9 @@ function createRoom() {
         console.log("Peer ID  : ", peer_id);
         console.log("SOCKET ID: ", socket.id);
         console.log("room_id  : ", room_id);
-
-        getUserMediaCustom({ audio: true }, (stream) => {
+        
+        navigator.getUserMedia({ audio: true }, (stream) => {
+        // getUserMediaCustom({ audio: true }, (stream) => {
             local_stream = stream;
             console.log('User info :', local_stream);
             room_id_for_my = room_id;

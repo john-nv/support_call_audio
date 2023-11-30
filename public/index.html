@@ -22,10 +22,9 @@
     <link rel="shortcut icon" type="image/png" href="/img/helpAudioCall.png"/>
   </head>
   <body>
-    <!-- <textarea id="value-mes"></textarea><button id="send-mes">Gui</button> -->
-    <div class="">
+    <div>
       <div class="u-main d-flex flex-column">
-        <div style="text-align: center; color: #e84393; font-weight: 600;" class="u-title">
+        <div class="u-title">
           <span style="color: #e84393; font-weight: 600;"  id="title_welcome">Hỗ trợ khách hàng</span>&ensp;<i class="fa-solid fa-headset"></i>
         </div>
         <div class="u-content mt-auto">
@@ -38,17 +37,17 @@
     </div>
 
     <!-- open dialog -->
-    <div class="modal fade" id="dialog_alert" tabindex="-1" aria-hidden="true" data-backdrop="static">
+    <div class="modal fade" id="dialog_alert" style="margin-top: 21vh;" tabindex="-1" aria-hidden="true" data-backdrop="static">
       <div class="modal-dialog">
-        <div class="modal-content" id="dialog-content">
+        <div class="modal-content" id="dialog-content"  style=" border-radius: 24px;"  >
           <div class="modal-header">
-            <h5 class="modal-title" style="font-weight: 600;" id="title_dialog">Hỗ trợ khách hàng</h5>&ensp;<i class="fa-solid fa-headset"></i>
+            <h5 class="modal-title" style="font-weight: 600; color: white;" id="title_dialog">Hỗ trợ khách hàng</h5>&ensp;<i class="fa-solid fa-headset"></i>
           </div>
           <div class="modal-body">
             <input type="text" id="getNameUser" class="form-control" placeholder="Nhập tên của bạn ....">
           </div>
           <div class="modal-footer">
-            <button type="button" id="btnGetNameUser" class="btn btn-primary">Bắt đầu</button>
+            <button type="button" id="btnGetNameUser" style="background-color: #e84393; border: #e84393;" class="btn btn-primary">Bắt đầu</button>
           </div>
         </div>
       </div>

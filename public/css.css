@@ -39,7 +39,7 @@ body {
 }
 
 p, label, span, h1, h2, h3, h4, h5, h6, h7 {
-    color: white;
+    color: black;
     font-family: 'Playpen Sans', sans-serif;;
 }
 
@@ -189,19 +189,64 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 .u-main {
     padding: 17px;
     border: 1px solid var(--border-solid);
-    background-color: #171f2e;
-    height: 80vh;
+    background-color: white;
+    height: 100vh;
     border-radius: 25px;
-    margin: 10px;
+    /* margin: 10px; */
     text-align: center;
 }
 
 .u-title {
+    text-align: center; 
+    color: #e84393;
+    font-weight: 600;
     font-size: 30px;
     font-weight: 600;
-    color: var(--highlight);
+}
+.u-title {
+    margin-top: 24vh;
+}
+.u-content {
+    margin-bottom: 24vh;
 }
 
+/* @media only screen and (max-width: 300px) {
+    .u-title {
+        margin-top: 150px;
+    }
+    .u-content {
+        margin-bottom: 180px;
+    }
+}
+
+@media only screen and  (min-width: 301px) and (max-width: 400px)  {
+    .u-title {
+        margin-top: 220px;
+    }
+    .u-content {
+        margin-bottom: 180px;
+    }
+}
+
+@media only screen and (min-width: 401px) and (max-width: 600px) {
+    .u-title {
+        margin-top: 250px;
+    }
+    .u-content {
+        margin-bottom: 300px;
+    }
+}
+
+@media only screen and (min-width: 601px) {
+    .u-title {
+        margin-top: 250px;
+    }
+    .u-content {
+        margin-bottom: 300px;
+    }
+} */
+
+   
 .u-content{
     font-size: 20px;
 }
@@ -231,7 +276,7 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 }
 
 #dialog-content {
-    background-color: #13263c;
+    background-color: #262e37;
     color: white;
     font-weight: 600;
 }

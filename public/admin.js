@@ -133,15 +133,12 @@ $(document).on('click', '.inbox-m', function() {
 });
 
 function joinRoom(room_id) {
-  peer = new Peer({
-    host: '38.242.159.108',
-    port: 9000,
-    path: "/",
-    })
+  peer = new Peer({host: '/', port: 9000,});
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')
       console.log("Admin Connected with Id: " + id);
-      getUserMediaCustom({ audio: true }, (stream) => {
+      navigator.getUserMedia({ audio: true }, (stream) => {
+      // getUserMediaCustom({ audio: true }, (stream) => {
           local_stream = stream;
           console.log('Admin local_stream:', local_stream);
           let call = peer.call(room_id, local_stream);
