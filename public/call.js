@@ -1,32 +1,19 @@
-// const serverApi = 'http://localhost:3333'
-// const serverApi = 'https://9bdd-171-232-180-235.ngrok-free.app'
-// const serverApi = 'http://38.242.159.108:3333'
-// const socket = io(serverApi)
 const socket = io()
 
-let room_id;
-let getUserMediaCustom = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-let local_stream = null;
+let room_id, peer_id;
 let peer = null;
-let peer_id = ''
-let currentPeer = null
-let screenSharing = false
-const tingTingCall = new Audio('./voice/cell-phone-ring.wav');
-const busyCall = new Audio('./voice/busy-phone.wav');
-const startEndCall = new Audio('./voice/start-end-call.wav');
-let nameUser = 'Khong xac dinh'
+let local_stream = null;
+let getUserMediaCustom = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+let nameUser = 'user'
 let statusCall=0
-let isCall=false
-let audio = document.getElementById("remote-audio");
 let countDownDelayCallBusyValueDefault = 60
 let countDownDelayCallBusy = countDownDelayCallBusyValueDefault;
 let room_id_for_my = ''
 
-// 0 => HELP
-// 1 => BUSY
-// 2 => CONNECT_PENDING
-// 3 => CANCEL_CALL
-// 4 => END_CALL
+let audio = document.getElementById("remote-audio");
+const tingTingCall = new Audio('./voice/cell-phone-ring.wav');
+const busyCall = new Audio('./voice/busy-phone.wav');
+const startEndCall = new Audio('./voice/start-end-call.wav');
 
 let STATUS_CALL = {
     HELP: 'Ấn nút gọi để gặp tổng đài viên',
@@ -55,8 +42,8 @@ let countTimeCall = '00:00:00'
 
 $('#btnGetNameUser').on('click', () => {
     const name = $('#getNameUser').val()
-    console.log(name)
-    if (name.length < 3){
+    console.log('ten nguoi dung => ', name)
+    if (name.length < 1){
         alert('Vui lòng nhập tên của bạn')
     } else{
         nameUser = name
@@ -65,11 +52,9 @@ $('#btnGetNameUser').on('click', () => {
 })
 
 $(document).ready(function() {
-    const token = localStorage.getItem('_')
     $.ajax({
         type: "POST",
         url: "/admin/getConfig",
-        data: { token },
         success: function (res) {
             if (res.code != 1) return;
             console.log(res.data)
@@ -94,32 +79,31 @@ $(document).ready(function() {
 });
 
 function stopCallAdmin() {
-    leaveRoom(4, true)
+    leaveRoom('END_CALL', true)
 
     // tat dem nguoc tu dong thoat
     stopCountdownCallAndLeaveRoom()
     countDownDelayCallBusy = countDownDelayCallBusyValueDefault;
 
-    // tat dem gio cuo goi
+    // tat dem gio cuoc goi
     stopTimeCallWithAdmin()
     secondsCountDown = 0
 }
 
 function startCallAdmin(){
     $('.control-call-user').html(html_btn_loading)
-    statusChange(2)
+    statusChange('CONNECT_PENDING')
     $.ajax({
         url: `/api/user/call`,
         method: "POST",
         success: function(data) {
             if(data){
                 console.log('tong dai vien ban ...')
-                statusChange(1)
+                statusChange('BUSY')
                 $('.control-call-user').html(html_btn_call)
             }else{
                 console.log('dang goi ...')
-                // createRoom()
-                createRoomWithRetry()
+                createRoom()
             }
         },
         error: function(error) {
@@ -128,62 +112,52 @@ function startCallAdmin(){
     });
 }
 
-function createRoomWithRetry() {
-    let roomCreated = false;
+function createRoom() {
+    room_id = socket.id + Date.now();
+    peer = null
+    peer = new Peer(room_id, {
+        host: '38.242.159.108',
+		port: 9000,
+		path: "/",
+    });
 
-    function createRoom() {
-        room_id = socket.id + Date.now();
-        peer = null
-        peer = new Peer(room_id);
+    peer.on('open', (id) => {
+        peer_id = id;
 
-        peer.on('open', (id) => {
-            peer_id = id;
+        console.log("Peer ID  : ", peer_id);
+        console.log("SOCKET ID: ", socket.id);
+        console.log("room_id  : ", room_id);
 
-            console.log("Peer ID  : ", peer_id);
-            console.log("SOCKET ID: ", socket.id);
-            console.log("room_id  : ", room_id);
+        getUserMediaCustom({ audio: true }, (stream) => {
+            local_stream = stream;
+            console.log('User info :', local_stream);
+            room_id_for_my = room_id;
+            socket.emit('create_room', { peer_id: id, room_id: room_id, nameUser: nameUser });
+            $('.control-call-user').html(html_btn_cancel);
 
-            getUserMediaCustom({ audio: true }, (stream) => {
-                local_stream = stream;
-                console.log('User info :', local_stream);
-                room_id_for_my = room_id;
-                socket.emit('create_room', { peer_id: id, room_id: room_id, nameUser: nameUser });
-                $('.control-call-user').html(html_btn_cancel);
-
-                calling();
-                startCountdownCallAndLeaveRoom();
-                roomCreated = true;
-            }, (err) => {
-                console.log('User getUserMedia error:', err);
-                // Set roomCreated to false in case of error
-                roomCreated = false;
-            });
+            calling();
+            startCountdownCallAndLeaveRoom();
+            roomCreated = true;
+        }, (err) => {
+            console.log('User getUserMedia error:', err);
+            // Set roomCreated to false in case of error
+            roomCreated = false;
         });
+    });
 
-        peer.on('call', (call) => {
-            call.answer(local_stream);
-            console.log('audio de truyen audio den admin ', local_stream)
-            call.on('stream', (stream) => {
-                console.log('nhan duoc cuoc goi');
-                endCalling();
-                startEndCall.play();
-                startTimeCall();
-                stopCountdownCallAndLeaveRoom();
-                console.log('nhan duoc audio tu admin :', stream);
-                setRemoteAudioStream(stream);
-            });
-            currentPeer = call;
+    peer.on('call', (call) => {
+        call.answer(local_stream);
+        console.log('audio de truyen audio den admin ', local_stream)
+        call.on('stream', (stream) => {
+            console.log('admin vao phong');
+            endCalling();
+            startEndCall.play();
+            startTimeCall();
+            stopCountdownCallAndLeaveRoom();
+            console.log('nhan duoc audio tu admin :', stream);
+            setRemoteAudioStream(stream);
         });
-    }
-
-    createRoom();
-
-    setTimeout(() => {
-        if (!roomCreated) {
-            console.log("Failed to create room. Retrying...");
-            createRoomWithRetry()
-        }
-    }, 2000);
+    });
 }
 
 
@@ -193,7 +167,7 @@ socket.on('leave_room_admin', payload => {
         console.log('admin ngat may')
         $('.control-call-user').html(html_btn_call)
 
-        leaveRoom(4, false)
+        leaveRoom('END_CALL', false)
 
         // tat dem gio cuo goi
         stopTimeCallWithAdmin()
@@ -210,7 +184,7 @@ function setRemoteAudioStream(stream) {
 // whoIsEndCall 
 // true => user
 // false => admin
-function leaveRoom(status = 4, whoIsEndCall = true) {
+function leaveRoom(status = 'END_CALL', whoIsEndCall = true) {
     whoIsEndCall = whoIsEndCall ? 'USER' : 'ADMIN'
     if (peer && peer.open) {
         socket.emit('leave_room', { peer_id, room_id, nameUser, countTimeCall, whoIsEndCall });
@@ -266,22 +240,22 @@ function endCalling(){
 
 // ========================================== STATUS ==========================================
 
-function statusChange(statusNumber) {
+function statusChange(status) {
     let statusMsg = 'Loading ...'
-    switch (statusNumber) {
-        case 0:
+    switch (status) {
+        case 'HELP':
             statusMsg = STATUS_CALL.HELP
             break;
-        case 1:
+        case 'BUSY':
             statusMsg = STATUS_CALL.BUSY
             break;
-        case 2:
+        case 'CONNECT_PENDING':
             statusMsg = STATUS_CALL.CONNECT_PENDING
             break;
-        case 3:
+        case 'CANCEL_CALL':
             statusMsg = STATUS_CALL.CANCEL_CALL
             break;
-        case 4:
+        case 'END_CALL':
             statusMsg = STATUS_CALL.END_CALL
             break;
     
@@ -304,11 +278,11 @@ function startCountdownCallAndLeaveRoom() {
             stopCountdownCallAndLeaveRoom()
             countDownDelayCallBusy = countDownDelayCallBusyValueDefault
             
-            leaveRoom(1)
+            leaveRoom('BUSY')
             busyCall.play()
-            console.log('Hiện tại các tổng đài viên không thể tiếp nhận cuộc gọi, hệ thống đã tự động tắt cuộc gọi.');
+            console.log('tong dai vien ban,countdown tu choi cuoc goi.');
         }
-        console.log('countDownDelayCallBusy => ', countDownDelayCallBusy)
+        console.log('dem nguoc tu dong ngat may => ', countDownDelayCallBusy)
         countDownDelayCallBusy--;
     }, 1000);
 }
@@ -334,7 +308,7 @@ function startTimeCall() {
 
 function stopTimeCallWithAdmin() {
     clearInterval(intervalCountTimeCall);
-    secondsCountDown = 0;
+    resetTimeCall()
 }
 
 function updateStatusCountTimeCall() {
@@ -344,7 +318,7 @@ function updateStatusCountTimeCall() {
     const formattedTime = `${formatTime(hours)}:${formatTime(minutes)}:${formatTime(remainingSeconds)}`;
     
     countTimeCall = formattedTime
-    console.log('thoi gian noi chuyen => ',formattedTime)
+    console.log('dem thoi gian goi => ',formattedTime)
     $('.u-content p').text(formattedTime);
 }
 
@@ -352,19 +326,7 @@ function formatTime(value) {
     return value < 10 ? `0${value}` : value;
 }
 
-// (function () {
-//     if (!$('body').hasClass('debug_mode')) {
-//         var _z = console;
-//         Object.defineProperty(window, "console", {
-//             get: function () {
-//                 if ((window && window._z && window._z._commandLineAPI) || {}) {
-//                     throw "Cấm chèn lệnh";
-//                 }
-//                 return _z;
-//             },
-//             set: function (val) {
-//                 _z = val;
-//             }
-//         });
-//     }
-// })();
+function resetTimeCall(){
+    secondsCountDown = 0
+    countTimeCall = '00:00:00'
+}

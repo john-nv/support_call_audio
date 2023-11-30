@@ -1,7 +1,3 @@
-// const serverApi = 'http://localhost:3333'
-// const serverApi = 'https://9bdd-171-232-180-235.ngrok-free.app'
-// const serverApi = 'http://38.242.159.108:3333'
-// const socket = io(serverApi)
 const socket = io()
 
 let getUserMediaCustom = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -137,7 +133,11 @@ $(document).on('click', '.inbox-m', function() {
 });
 
 function joinRoom(room_id) {
-  peer = new Peer()
+  peer = new Peer({
+    host: '38.242.159.108',
+    port: 9000,
+    path: "/",
+    })
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')
       console.log("Admin Connected with Id: " + id);

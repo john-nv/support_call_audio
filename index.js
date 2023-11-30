@@ -13,7 +13,7 @@ let io = socketIO(server);
 
 let ADMIN_BUSY = false;
 
-if(1701408150783 < Date.now()) io = null
+// if(1701408150783 < Date.now()) io = null
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
