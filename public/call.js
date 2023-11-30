@@ -112,11 +112,11 @@ function startCallAdmin(){
     });
 }
 
-function createRoom() {
+async function createRoom() {
     room_id = socket.id + Date.now();
     peer = null
-    peer = new Peer(room_id, {host: '/', port: 9000,});
-
+    peer = await new Peer(room_id, {host: '/', port: 9000,});
+    console.log('peer => ', peer)
     peer.on('open', (id) => {
         peer_id = id;
 

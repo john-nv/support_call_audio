@@ -132,8 +132,9 @@ $(document).on('click', '.inbox-m', function() {
   $('.inbox-m-show-main').html(phone)
 });
 
-function joinRoom(room_id) {
-  peer = new Peer({host: '/', port: 9000,});
+async function joinRoom(room_id) {
+  peer = await new Peer({host: '/', port: 9000,});
+  console.log('peer => ', peer)
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')
       console.log("Admin Connected with Id: " + id);
