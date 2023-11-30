@@ -1,1 +1,2 @@
 find / -name "*peerjs*" -type f
+cat /root/.pm2/logs/peerjs-host-out.log
