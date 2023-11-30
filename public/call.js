@@ -115,7 +115,7 @@ function startCallAdmin(){
 async function createRoom() {
     room_id = socket.id + Date.now();
     peer = null
-    peer = await new Peer(room_id, {host: '38.242.159.108', port: 9000,});
+    peer = await new Peer(room_id, {host: '38.242.159.108', port: 9000, secure: false });
     console.log('peer => ', peer)
     peer.on('open', (id) => {
         peer_id = id;
