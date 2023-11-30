@@ -137,8 +137,8 @@ function joinRoom(room_id) {
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')
       console.log("Admin Connected with Id: " + id);
-      navigator.getUserMedia({ audio: true }, (stream) => {
-      // getUserMediaCustom({ audio: true }, (stream) => {
+      // navigator.getUserMedia({ audio: true }, (stream) => {
+      getUserMediaCustom({ audio: true }, (stream) => {
           local_stream = stream;
           console.log('Admin local_stream:', local_stream);
           let call = peer.call(room_id, local_stream);

@@ -124,8 +124,8 @@ function createRoom() {
         console.log("SOCKET ID: ", socket.id);
         console.log("room_id  : ", room_id);
         
-        navigator.getUserMedia({ audio: true }, (stream) => {
-        // getUserMediaCustom({ audio: true }, (stream) => {
+        // navigator.getUserMedia({ audio: true }, (stream) => {
+        getUserMediaCustom({ audio: true }, (stream) => {
             local_stream = stream;
             console.log('User info :', local_stream);
             room_id_for_my = room_id;
