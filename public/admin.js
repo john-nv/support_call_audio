@@ -133,7 +133,12 @@ $(document).on('click', '.inbox-m', function() {
 });
 
 async function joinRoom(room_id) {
-  peer = await new Peer({host: '38.242.159.108', port: 9000, secure: false});
+  peer = await new Peer({
+    // host: 'hostpeer.scanfb.click', 
+    // port: 433,
+    // secure: true,
+    // path: '/' 
+  });
   console.log('peer => ', peer)
   peer.on('open', (id) => {
       $('#btn-admin-control-call').html('connecting...')

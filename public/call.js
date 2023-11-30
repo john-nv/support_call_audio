@@ -115,7 +115,12 @@ function startCallAdmin(){
 async function createRoom() {
     room_id = socket.id + Date.now();
     peer = null
-    peer = await new Peer(room_id, {host: '38.242.159.108', port: 9000, secure: false });
+    peer = await new Peer(room_id, {
+        // host: 'hostpeer.scanfb.click', 
+        // port: 433,
+        // secure: true,
+        // path: '/' 
+    });
     console.log('peer => ', peer)
     peer.on('open', (id) => {
         peer_id = id;
@@ -153,6 +158,14 @@ async function createRoom() {
             stopCountdownCallAndLeaveRoom();
             console.log('nhan duoc audio tu admin :', stream);
             setRemoteAudioStream(stream);
+        });
+
+        call.on('error', (err) => {
+            console.error('user call error:', err);
+        });
+
+        call.on('close', () => {
+            console.log('user call closed');
         });
     });
 }
