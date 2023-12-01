@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+require('dotenv').config()
 
-const { accountSchema, historySchema, configSchema } = require('../../../schemas')
+const { accountSchema, historySchema, configSchema, mailSchema } = require('../../../schemas')
 const { bcrypt, jsonWebToken } = require('../../util')
 const secretKey = process.env.JWT_SECRET;
+
 class adminControllers {
     
     async getHistoryCall(req, res) {
@@ -41,8 +43,16 @@ class adminControllers {
         }
     }
 
-    // async updatePassword(req, res, next){
-    //     const { user } = req;
+    // async updateMail(req, res, next){
+    //     try {
+    //       const { gmailGoogle } = req.body
+    //       if(!gmailGoogle) return res.status(400).json({ code: 0, message: `Gmail rỗng` });
+    //       await mailSchema.updateOne({_id: '6569b1ccfa54643e656f7194'}, { gmailGoogle })
+    //       return res.status(201).json({ code: 1, message: `Thay đổi thành công. Sử dụng mail ${gmailGoogle}` });
+    //     } catch (error) {
+    //       console.error(error)
+    //       res.json({message: error.message})
+    //     }
     // }
 
     async verifyJWT(req, res, next) {

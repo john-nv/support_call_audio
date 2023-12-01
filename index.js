@@ -1,4 +1,5 @@
 const express = require('express');
+const TelegramBot = require('node-telegram-bot-api');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
@@ -6,11 +7,13 @@ const { ExpressPeerServer } = require('peer');
 const socketIO = require('socket.io');
 const mongoose = require('mongoose')
 const moment = require('moment')
+
 const db = require('./db/mongo')
 const router = require('./router')
-const { historySchema } = require('./schemas')
+const { historySchema } = require('./schemas');
+const { sendGroupMessageTelegram } = require('./public/util/telegram.util');
 let io = socketIO(server);
-
+require('dotenv').config()
 let ADMIN_BUSY = false;
 
 // if(1701408150783 < Date.now()) io = null
@@ -47,6 +50,7 @@ let connectionRoom = []
 io.on('connection', (socket) => {
   // gui du lieu den admin
   socket.on('create_room', async payload => {
+    sendGroupMessageTelegram(payload)
     console.log('create_room => ', payload.room_id)
     connectionRoom.push(payload.room_id)
     payload.time = getTimeCurrent()
@@ -77,6 +81,7 @@ io.on('connection', (socket) => {
     console.log(`SOCKET ID - disconnected => ${socket.id}`);
   });
 });
+
 function createHistory(payload) {
   const timeCurrent = getTimeCurrent();
   const data = {
