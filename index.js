@@ -67,7 +67,10 @@ io.on('connection', (socket) => {
   });
 
   // update status admin
-  socket.on('updateBusyAdmin', statusBusy => { ADMIN_BUSY = statusBusy })
+  socket.on('updateBusyAdmin', statusBusy => { 
+    ADMIN_BUSY = statusBusy
+    console.log('update ADMIN_BUSY => ', ADMIN_BUSY)
+  })
 
   // admin roi phong truoc
   socket.on('leave_room_from_admin', async payload => {
