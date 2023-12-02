@@ -254,6 +254,7 @@ function disconnectPeer(){
 // ================================= busy send server ===========================
 function updateStatusBusyAdmin(boolean){
   busy = boolean
+  console.log('thay doi trang thai admin : ', busy)
   socket.emit('updateBusyAdmin', boolean)
 }
 
