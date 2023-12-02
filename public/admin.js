@@ -8,7 +8,7 @@ let roomIdUserCurrent = undefined
 let roomIdUserCurrentCall = undefined // dang trong cuoc tro chuyen
 const beforeNameRoom = 'peer'
 const STATUS_MES_USER = {
-  BUSY: 'Đã tự động từ chối cuộc gọi hoặc người dùng tự rời đi',
+  BUSY: 'Người dùng tự rời đi hoặc đã tự động từ chối cuộc gọi',
   NEW: 'Bạn có cuộc gọi đến',
   DONE: 'Hoàn thành cuộc gọi',
 }
@@ -62,6 +62,20 @@ function checkIsCallOrNot(roomIdLeave, call = false){
   }
 }
 
+$(document).ready(function() {
+  const url = window.location.href;
+  const urlObj = new URL(url);
+  
+  const nameUser = urlObj.searchParams.get('nameUser');
+  const room_id = urlObj.searchParams.get('roomId');
+  const time = urlObj.searchParams.get('time');
+  console.log(nameUser, room_id, time)
+  if (nameUser && room_id && time) {
+    addNewRoom(room_id, nameUser, time);
+  }
+});
+
+
 socket.on('create_room_admin', payload => {
   const { peer_id, room_id: _room_id, nameUser, time } = payload;
   arrCallRingring.push(room_id)
@@ -69,25 +83,29 @@ socket.on('create_room_admin', payload => {
   console.log(`newRoom => ${JSON.stringify(payload)}`);
   room_id = _room_id
   // append call new
-  $('.inbox-m-check').prepend(`
-    <div class="inbox-m mes-active p-2 ${beforeNameRoom + room_id}">
-      <div class="inbox-m-image">
-        <img
-          src="https://vnn-imgs-a1.vgcloud.vn/cdn.24h.com.vn/upload/4-2019/images/2019-11-28/1574931300-18-hot-girl-lao-goc-viet-dep-khong-ty-vet-khoe-than-hinh-van-nguoi-me-c6-1574928072-width593height593.jpg"
-          alt=""
-        />
-      </div>
-      <div class="inbox-m-content pl-2 pb-2">
-        <div class="inbox-m-info d-flex justify-content-between">
-          <div class="inbox-m-name"><span>${nameUser}</span></div>
-          <div class="inbox-m-time"><span>${time}</span></div>
-        </div>
-        <div class="inbox-m-message">
-          <span>${STATUS_MES_USER.NEW}</span>
-        </div>
-      </div>
-    </div>`)
+  addNewRoom(room_id, nameUser, time)
 });
+
+function addNewRoom(room_id, nameUser, time) {
+  $('.inbox-m-check').prepend(`
+  <div class="inbox-m mes-active p-2 ${beforeNameRoom + room_id}">
+    <div class="inbox-m-image">
+      <img
+        src="https://vnn-imgs-a1.vgcloud.vn/cdn.24h.com.vn/upload/4-2019/images/2019-11-28/1574931300-18-hot-girl-lao-goc-viet-dep-khong-ty-vet-khoe-than-hinh-van-nguoi-me-c6-1574928072-width593height593.jpg"
+        alt=""
+      />
+    </div>
+    <div class="inbox-m-content pl-2 pb-2">
+      <div class="inbox-m-info d-flex justify-content-between">
+        <div class="inbox-m-name"><span>${nameUser}</span></div>
+        <div class="inbox-m-time"><span>${time}</span></div>
+      </div>
+      <div class="inbox-m-message">
+        <span>${STATUS_MES_USER.NEW}</span>
+      </div>
+    </div>
+  </div>`)
+}
 
 $(document).on('click', '.inbox-m', function() {
   if(busy==true) return alert('Bạn đang trong cuộc trò chuyện khác')
@@ -159,7 +177,7 @@ async function joinRoom(room_id) {
             startEndCall.play()
             console.log('admin da bat may vao phong => ', room_id)
             $('#btn-admin-control-call').html(`<button onclick="leaveRoom('${room_id}')" class="btn btn-call btn-call-close"><i class="fa-solid fa-xmark"></i></button>`)
-            busy = true
+            updateStatusBusyAdmin(true)
             console.log('Admin received remote stream:', stream);
             setRemoteAudioStream(stream);
           });
@@ -205,7 +223,7 @@ function leaveRoom(room_id_call){
     const roomIdLeave = beforeNameRoom + roomIdUserCurrentCall
     checkIsCallOrNot(roomIdLeave, true) // check ben admin de thay doi 
     endCalling()
-    busy = false
+    updateStatusBusyAdmin(false)
     startEndCall.play()
     $('.inbox-m-show-main').html('')
     
@@ -229,8 +247,14 @@ function disconnectPeer(){
 
     console.log('disconnect peer')
     peer.destroy();
-    busy = false
+    updateStatusBusyAdmin(false)
   }
+}
+
+// ================================= busy send server ===========================
+function updateStatusBusyAdmin(boolean){
+  busy = boolean
+  socket.emit('updateBusyAdmin', boolean)
 }
 
 // ================================= voice ===========================

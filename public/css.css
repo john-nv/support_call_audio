@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Playpen+Sans:wght@400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap');
+
 
 :root {
     --white: white;
@@ -28,19 +30,21 @@
 }
 
 ::-webkit-scrollbar-track {
-    background-color: var(--border-solid);;
+    background-color: var(--border-solid);
     border-radius: 20px;
 }
 
 body {
     background-color: black;
-    font-family: 'Playpen Sans', sans-serif;;
+    /* font-family: 'Playpen Sans', sans-serif; */
+    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
 }
 
 p, label, span, h1, h2, h3, h4, h5, h6, h7 {
     color: black;
-    font-family: 'Playpen Sans', sans-serif;;
+    /* font-family: 'Playpen Sans', sans-serif; */
+    font-family: 'Montserrat', sans-serif;
 }
 
 .mes-active{

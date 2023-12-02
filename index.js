@@ -1,12 +1,12 @@
 const express = require('express');
+const mongoose = require('mongoose')
+const moment = require('moment')
 const TelegramBot = require('node-telegram-bot-api');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { ExpressPeerServer } = require('peer');
 const socketIO = require('socket.io');
-const mongoose = require('mongoose')
-const moment = require('moment')
 
 const db = require('./db/mongo')
 const router = require('./router')
@@ -50,10 +50,10 @@ let connectionRoom = []
 io.on('connection', (socket) => {
   // gui du lieu den admin
   socket.on('create_room', async payload => {
-    sendGroupMessageTelegram(payload)
     console.log('create_room => ', payload.room_id)
     connectionRoom.push(payload.room_id)
     payload.time = getTimeCurrent()
+    sendGroupMessageTelegram(payload)
     io.emit('create_room_admin', payload);
   });
 
@@ -65,6 +65,9 @@ io.on('connection', (socket) => {
     io.emit('leave_room_alert_admin', payload);
     createHistory(payload)
   });
+
+  // update status admin
+  socket.on('updateBusyAdmin', statusBusy => { ADMIN_BUSY = statusBusy })
 
   // admin roi phong truoc
   socket.on('leave_room_from_admin', async payload => {

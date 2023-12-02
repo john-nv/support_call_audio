@@ -96,15 +96,18 @@ function startCallAdmin(){
     $.ajax({
         url: `/api/user/call`,
         method: "POST",
-        success: function(data) {
-            if(data){
+        success: function(busy) {
+            console.log(busy)
+            if(busy == true){
                 console.log('tong dai vien ban ...')
-                statusChange('BUSY')
-                $('.control-call-user').html(html_btn_call)
-            }else{
+                // statusChange('CONNECT_PENDING')
+                // $('.control-call-user').html(html_btn_call)
+                // dung de tao cuoc goi va tu dong tu choi
+                countDownDelayCallBusy = 1
+            } else{
                 console.log('dang goi ...')
-                createRoom()
             }
+            createRoom()
         },
         error: function(error) {
             console.error("Lỗi khi thực hiện GET request:", error);
@@ -196,8 +199,8 @@ function setRemoteAudioStream(stream) {
 // false => admin
 function leaveRoom(status = 'END_CALL', whoIsEndCall = true) {
     whoIsEndCall = whoIsEndCall ? 'USER' : 'ADMIN'
+    socket.emit('leave_room', { peer_id, room_id, nameUser, countTimeCall, whoIsEndCall });
     if (peer && peer.open) {
-        socket.emit('leave_room', { peer_id, room_id, nameUser, countTimeCall, whoIsEndCall });
         disconnectPeer()
         if (local_stream) {
             const audioTracks = local_stream.getAudioTracks();
