@@ -32,8 +32,10 @@ function formatContent(payload) {
 📞 | \`${payload.room_id}\`
 ⏰ | \`${payload.time}\`
 
-🔗 [Bấm vào đây để nghe](${process.env.DOMAIN}?roomId=${payload.room_id}&nameUser=${payload.nameUser}&time=${payload.time})
+
 `;
 }
+
+//🔗 [Bấm vào đây để nghe](${process.env.DOMAIN}?roomId=${payload.room_id}&nameUser=${payload.nameUser}&time=${payload.time})
 
 module.exports = { sendGroupMessageTelegram };
