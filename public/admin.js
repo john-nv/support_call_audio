@@ -223,7 +223,6 @@ function leaveRoom(room_id_call){
     const roomIdLeave = beforeNameRoom + roomIdUserCurrentCall
     checkIsCallOrNot(roomIdLeave, true) // check ben admin de thay doi 
     endCalling()
-    updateStatusBusyAdmin(false)
     startEndCall.play()
     $('.inbox-m-show-main').html('')
     

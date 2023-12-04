@@ -11,7 +11,7 @@ const socketIO = require('socket.io');
 const db = require('./db/mongo')
 const router = require('./router')
 const { historySchema } = require('./schemas');
-const { sendGroupMessageTelegram } = require('./public/util/telegram.util');
+const { sendGroupMessageTelegram, sendCheckAdmin } = require('./public/util/telegram.util');
 let io = socketIO(server);
 require('dotenv').config()
 let ADMIN_BUSY = false;
@@ -70,6 +70,7 @@ io.on('connection', (socket) => {
   socket.on('updateBusyAdmin', statusBusy => { 
     ADMIN_BUSY = statusBusy
     console.log('update ADMIN_BUSY => ', ADMIN_BUSY)
+    sendCheckAdmin(ADMIN_BUSY)
   })
 
   // admin roi phong truoc
