@@ -35,7 +35,7 @@
 }
 
 body {
-    background-color: black;
+    background-color: white;
     /* font-family: 'Playpen Sans', sans-serif; */
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -45,6 +45,16 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
     color: black;
     /* font-family: 'Playpen Sans', sans-serif; */
     font-family: 'Montserrat', sans-serif;
+}
+
+.header-u-main{
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #e84393;
+    color: white;
+    padding: 15px 0px 15px 10px;
+    font-weight: 600;
+    font-size: 17px;
 }
 
 .mes-active{
@@ -170,32 +180,13 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
     margin-bottom: 20px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* ==================================== */
 /* USER */
 
 .u-main {
     padding: 17px;
-    border: 1px solid var(--border-solid);
     background-color: white;
     height: 100vh;
-    border-radius: 25px;
     /* margin: 10px; */
     text-align: center;
 }
@@ -280,7 +271,7 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 }
 
 #dialog-content {
-    background-color: #C0C0C0;
+    background-color: #f0f0f0;
     color: white;
     font-weight: 600;
 }
@@ -327,7 +318,7 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 .form-control,
 .form-control:focus,
 .form-control:active {
-    background-color: #A9A9A9;
+    background-color: #e8e8e8;
     color: black;
     border-color: var(--border-solid);
     border-radius: 10px;
