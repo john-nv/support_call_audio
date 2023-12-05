@@ -36,8 +36,7 @@
 
 body {
     height: 100vh;
-    background-color: rgba(255, 255, 255, 0.5);
-    /* font-family: 'Playpen Sans', sans-serif; */
+    background-color: transparent;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
 }
