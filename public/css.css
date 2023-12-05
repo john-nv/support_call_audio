@@ -35,7 +35,8 @@
 }
 
 body {
-    background-color: white;
+    height: 100vh;
+    background-color: rgba(255, 255, 255, 0.5);
     /* font-family: 'Playpen Sans', sans-serif; */
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
@@ -187,7 +188,6 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 .u-main {
     padding: 17px;
     background-color: white;
-    height: 100vh;
     /* margin: 10px; */
     text-align: center;
 }
