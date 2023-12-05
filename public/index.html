@@ -29,7 +29,7 @@
         </div>
         <div class="u-content mt-auto">
           <audio id="remote-audio" autoplay></audio>
-          <p>Kết nối với tổng đài viên</p>
+          <p>Connect to support, please wait…</p>
           <div class="control-call-user"><button onclick="startCallAdmin()" class="btn btn-call btn-call-user-call"><i class="fa-solid fa-phone"></i></button></div>
         </div>
     </div>    
@@ -39,15 +39,16 @@
     <!-- open dialog -->
     <div class="modal fade" id="dialog_alert" style="margin-top: 21vh;" tabindex="-1" aria-hidden="true" data-backdrop="static">
       <div class="modal-dialog">
-        <div class="modal-content" id="dialog-content"  style=" border-radius: 24px;"  >
+        <div class="modal-content" id="dialog-content" >
           <div class="modal-header">
-            <h5 class="modal-title" style="font-weight: 600; color: white;" id="title_dialog">Hỗ trợ khách hàng</h5>&ensp;<i class="fa-solid fa-headset"></i>
+            <h5 class="modal-title" style="font-weight: 600; color: rgb(69 69 69);" id="title_dialog">Hỗ trợ khách hàng</h5>&ensp;
+            <i style="font-weight: 600; color: rgb(69 69 69);" class="fa-solid fa-headset"></i>
           </div>
           <div class="modal-body">
-            <input type="text" id="getNameUser" class="form-control" placeholder="Nhập tên của bạn ....">
+            <input type="text" id="getNameUser" class="form-control" placeholder="Enter your username">
           </div>
           <div class="modal-footer">
-            <button type="button" id="btnGetNameUser" style="background-color: #e84393; border: #e84393;" class="btn btn-primary">Bắt đầu</button>
+            <button type="button" id="btnGetNameUser" style="background-color: #e84393; border: #e84393;" class="btn btn-primary">Start</button>
           </div>
         </div>
       </div>

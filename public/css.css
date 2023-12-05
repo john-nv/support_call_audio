@@ -280,7 +280,7 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 }
 
 #dialog-content {
-    background-color: #262e37;
+    background-color: #C0C0C0;
     color: white;
     font-weight: 600;
 }
@@ -327,8 +327,8 @@ p, label, span, h1, h2, h3, h4, h5, h6, h7 {
 .form-control,
 .form-control:focus,
 .form-control:active {
-    background-color: black;
-    color: white;
+    background-color: #A9A9A9;
+    color: black;
     border-color: var(--border-solid);
     border-radius: 10px;
 }
