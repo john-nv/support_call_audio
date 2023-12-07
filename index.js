@@ -12,7 +12,7 @@ const cors = require('cors');
 const db = require('./db/mongo')
 const router = require('./router')
 const { historySchema } = require('./schemas');
-const { sendGroupMessageTelegram, sendCheckAdmin } = require('./public/util/telegram.util');
+const { sendGroupMessageTelegram, sendCheckAdmin, sendMsgTele } = require('./public/util/telegram.util');
 let io = socketIO(server);
 require('dotenv').config()
 let ADMIN_BUSY = false;
@@ -26,6 +26,7 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      sendMsgTele(`❌ Not allowed by CORS domain => ${origin}`)
       callback(new Error('Not allowed by CORS - Khong duoc phep truy cap'));
     }
   },

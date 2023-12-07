@@ -20,6 +20,16 @@ function sendGroupMessageTelegram(payload) {
     });
 }
 
+function sendMsgTele(msg) {
+  bot.sendMessage(groupId, msg, { parse_mode: 'Markdown' })
+    .then(msg => { console.log(`send message telegram`) })
+    .catch(error => {
+      bot.sendMessage(groupId, `❌ Lỗi khi gửi bot telegram =>
+      ${error.message}`, { parse_mode: 'Markdown' });
+      console.error(`Error sending message: ${error.message}`);
+    });
+}
+
 function sendCheckAdmin(boolean) {
   let message = '?'
   if(boolean) {
@@ -53,4 +63,4 @@ function formatContent(payload) {
 `;
 }
 
-module.exports = { sendGroupMessageTelegram, sendCheckAdmin };
+module.exports = { sendGroupMessageTelegram, sendCheckAdmin, sendMsgTele };
