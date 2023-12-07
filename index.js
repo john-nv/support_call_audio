@@ -15,7 +15,8 @@ const { sendGroupMessageTelegram, sendCheckAdmin } = require('./public/util/tele
 let io = socketIO(server);
 require('dotenv').config()
 let ADMIN_BUSY = false;
-
+let roomIdUserCurrentCall = ''
+let idAdminCurrentCall = ''
 // if(1701408150783 < Date.now()) io = null
 
 app.use(express.urlencoded({ extended: true }));
@@ -73,6 +74,13 @@ io.on('connection', (socket) => {
     sendCheckAdmin(ADMIN_BUSY)
   })
 
+  // update room id current call
+  // lay id phong hien tai admin nghe may
+  socket.on('update_room_current_call', payload => { 
+    roomIdUserCurrentCall = payload.roomIdUserCurrentCall
+    idAdminCurrentCall = socket.id
+  })
+
   // admin roi phong truoc
   socket.on('leave_room_from_admin', async payload => {
     console.log('admin_leave_room => ', payload.room_id)
@@ -86,6 +94,14 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     checkLeaveRoomCall(socket.id)
     console.log(`SOCKET ID - disconnected => ${socket.id}`);
+    console.log(idAdminCurrentCall)
+    if(socket.id == idAdminCurrentCall) {
+      io.emit('leave_room_admin', { room_id: roomIdUserCurrentCall });
+      roomIdUserCurrentCall = ''
+      idAdminCurrentCall = ''
+      ADMIN_BUSY = false
+      sendCheckAdmin(ADMIN_BUSY)
+    }
   });
 });
 
