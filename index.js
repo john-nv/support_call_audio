@@ -19,17 +19,23 @@ let ADMIN_BUSY = false;
 let roomIdUserCurrentCall = ''
 let idAdminCurrentCall = ''
 
-const allowedOrigins = ['http://call.toolv3.com', 'https://call.toolv3.com'];
+// const allowedOrigins = ['http://call.toolv3.com', 'https://call.toolv3.com'];
+
+// const corsOptions = {
+//   origin: function (origin, callback) {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       sendMsgTele(`❌ Not allowed by CORS domain => ${origin}`)
+//       callback(new Error('Not allowed by CORS - Khong duoc phep truy cap'));
+//     }
+//   },
+//   methods: 'GET, POST, PUT, DELETE',
+//   allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+// };
 
 const corsOptions = {
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      sendMsgTele(`❌ Not allowed by CORS domain => ${origin}`)
-      callback(new Error('Not allowed by CORS - Khong duoc phep truy cap'));
-    }
-  },
+  origin: '*',
   methods: 'GET, POST, PUT, DELETE',
   allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
 };
