@@ -7,6 +7,7 @@ const http = require('http');
 const server = http.createServer(app);
 const { ExpressPeerServer } = require('peer');
 const socketIO = require('socket.io');
+const cors = require('cors');
 
 const db = require('./db/mongo')
 const router = require('./router')
@@ -17,17 +18,33 @@ require('dotenv').config()
 let ADMIN_BUSY = false;
 let roomIdUserCurrentCall = ''
 let idAdminCurrentCall = ''
-// if(1701408150783 < Date.now()) io = null
+
+const allowedOrigins = ['http://call.toolv3.com', 'https://call.toolv3.com'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS - Khong duoc phep truy cap'));
+    }
+  },
+  methods: 'GET, POST, PUT, DELETE',
+  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-  next();
-});
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
+//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//   next();
+// });
+
 const peerServer = ExpressPeerServer(server, { debug: true,});
 
 app.use('/peerjs', peerServer);
