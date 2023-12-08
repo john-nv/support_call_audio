@@ -1,15 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose')
 const moment = require('moment')
-const TelegramBot = require('node-telegram-bot-api');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { ExpressPeerServer } = require('peer');
 const socketIO = require('socket.io');
-const cors = require('cors');
+var cors = require('cors')
 
-const db = require('./db/mongo')
+const { corsOptions } = require('./app/config/cors')
+const db = require('./app/db/mongo')
 const router = require('./router')
 const { historySchema } = require('./schemas');
 const { sendGroupMessageTelegram, sendCheckAdmin, sendMsgTele } = require('./public/util/telegram.util');
@@ -19,41 +19,12 @@ let ADMIN_BUSY = false;
 let roomIdUserCurrentCall = ''
 let idAdminCurrentCall = ''
 
-// const allowedOrigins = ['http://call.toolv3.com', 'https://call.toolv3.com'];
-
-// const corsOptions = {
-//   origin: function (origin, callback) {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       sendMsgTele(`❌ Not allowed by CORS domain => ${origin}`)
-//       callback(new Error('Not allowed by CORS - Khong duoc phep truy cap'));
-//     }
-//   },
-//   methods: 'GET, POST, PUT, DELETE',
-//   allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
-// };
-
-const corsOptions = {
-  origin: '*',
-  methods: 'GET, POST, PUT, DELETE',
-  allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept',
-};
-
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
-// app.use((req, res, next) => {
-//   res.header('Access-Control-Allow-Origin', '*');
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   next();
-// });
-
 const peerServer = ExpressPeerServer(server, { debug: true,});
-
 app.use('/peerjs', peerServer);
 
 router(app)
