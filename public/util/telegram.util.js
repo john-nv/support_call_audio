@@ -32,6 +32,7 @@ function sendMsgTele(msg) {
 
 function sendCheckAdmin(boolean) {
   let message = '?'
+  console.log('update ADMIN_BUSY => ', boolean)
   if(boolean) {
     message = 'ADMIN đang bận'
   }else {

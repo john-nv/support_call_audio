@@ -10,6 +10,24 @@ const corsOptions = {
   credentials: true,
 };
 
+// const corsOptions = {
+//   origin: function (origin, callback) {
+
+//     if (!origin) {
+//       return callback('Origin header is missing', false);
+//     }
+
+//     if (allowedOrigins.includes(origin)) {
+//       return callback(null, true);
+//     }
+
+//     return callback(`Not allowed by CORS => ${origin} `, false);
+//   },
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   optionsSuccessStatus: 200,
+//   credentials: true,
+// };
+
 module.exports = {
   corsOptions
 };

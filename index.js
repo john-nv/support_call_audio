@@ -65,7 +65,6 @@ io.on('connection', (socket) => {
   // update status admin
   socket.on('updateBusyAdmin', statusBusy => { 
     ADMIN_BUSY = statusBusy
-    console.log('update ADMIN_BUSY => ', ADMIN_BUSY)
     sendCheckAdmin(ADMIN_BUSY)
   })
 
