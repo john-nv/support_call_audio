@@ -25,7 +25,7 @@ app.use(cors(corsOptions))
 if(1702870216019 < Date.now()) {
   io = null
 } else {
-  console.log('time => 1702870216019', data.now())
+  console.log('time => 1702870216019', Date.now())
 }
 
 app.use(express.urlencoded({ extended: true }));
