@@ -21,6 +21,9 @@ let idAdminCurrentCall = ''
 
 app.use(cors(corsOptions))
 
+// currentTime + (8 * 24 * 60 * 60 * 1000)
+if(1702870216019 < Date.now()) io = null
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
